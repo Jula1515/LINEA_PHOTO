@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier de Restauration Photographique | linea.promo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF8;
+    --paper-warm: #F3F1EB;
+    --card: #EFEDE6;
+    --ink: #1A1A1A;
+    --ink-soft: #3A3A3A;
+    --ink-faint: #6B6862;
+    --red: #B8262C;
+    --red-deep: #8B1F24;
+    --line: #DEDAD0;
+    --line-soft: rgba(26,26,26,0.08);
+
+    --display: 'Fraunces', serif;
+    --body: 'Public Sans', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  img { max-width: 100%; display: block; }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== Texture / grain overlay ===== */
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== Focus visibility ===== */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 3px;
+  }
+
+  /* ===== Header ===== */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250, 250, 248, 0.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line-soft);
+    transition: border-color .3s ease;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    font-family: var(--display);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .logo span { color: var(--red); font-style: italic; font-weight: 400; }
+
+  nav {
+    display: flex;
+    gap: 36px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  nav a { position: relative; color: var(--ink-soft); transition: color .2s ease; }
+  nav a:hover { color: var(--ink); }
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -4px;
+    height: 1px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .25s ease;
+  }
+  nav a:hover::after { transform: scaleX(1); }
+
+  .header-cta {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    padding: 10px 18px;
+    transition: background .25s ease, color .25s ease;
+  }
+  .header-cta:hover { background: var(--ink); color: var(--paper); }
+
+  .mobile-toggle { display: none; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    padding: 168px 0 110px;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.85fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red-deep);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--red);
+  }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    margin-bottom: 28px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--red);
+  }
+
+  .hero-lede {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    max-width: 460px;
+    margin-bottom: 40px;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 30px;
+    border: 1px solid var(--ink);
+    transition: background .25s ease, color .25s ease, border-color .25s ease;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--red-deep); border-color: var(--red-deep); }
+
+  .btn-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .btn-text:hover { color: var(--red-deep); border-color: var(--red-deep); }
+
+  .hero-stats {
+    display: flex;
+    gap: 36px;
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .stat-num {
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .stat-num span { color: var(--red); }
+  .stat-label {
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* ===== Hero visual: torn/mended photograph ===== */
+  .hero-visual {
+    position: relative;
+    aspect-ratio: 4/5;
+  }
+
+  .photo-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 18px;
+  }
+
+  .photo-frame .ph-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(0.18) contrast(1.02);
+  }
+
+  .seam-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  .corner-tag {
+    position: absolute;
+    bottom: -1px; right: -1px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 8px 14px;
+  }
+
+  .float-card {
+    position: absolute;
+    bottom: -28px;
+    left: -36px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 16px 20px;
+    box-shadow: 0 18px 40px rgba(26,26,26,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 230px;
+  }
+  .float-card .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+  .float-card p {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Section scaffolding ===== */
+  section { position: relative; }
+  .section-pad { padding: 120px 0; }
+  .section-pad-sm { padding: 90px 0; }
+
+  .section-head {
+    max-width: 600px;
+    margin-bottom: 64px;
+  }
+  .section-head .eyebrow { margin-bottom: 18px; }
+  .section-head h2 {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(30px, 3.4vw, 42px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+  }
+  .section-head h2 em { font-style: italic; font-weight: 400; color: var(--red); }
+  .section-head p {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--line);
+    width: 100%;
+  }
+
+  /* ===== Services ===== */
+  .services-bg { background: var(--paper-warm); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .service-card {
+    background: var(--paper-warm);
+    padding: 44px 40px;
+    transition: background .3s ease;
+  }
+  .service-card:hover { background: var(--paper); }
+
+  .service-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 0.06em;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .service-card h3 {
+    font-family: var(--display);
+    font-size: 23px;
+    font-weight: 500;
+    margin-bottom: 14px;
+    letter-spacing: -0.005em;
+  }
+
+  .service-card p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .service-tags span {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--ink-faint);
+    border: 1px solid var(--line);
+    padding: 5px 10px;
+  }
+
+  /* ===== Before/After ===== */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .compare-card {
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  .compare-img-wrap {
+    position: relative;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    cursor: ew-resize;
+    background: var(--card);
+  }
+
+  .compare-img-wrap .before-layer,
+  .compare-img-wrap .after-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .compare-img-wrap .before-layer {
+    filter: grayscale(0.5) sepia(0.3) contrast(0.85) brightness(0.92);
+  }
+  .compare-img-wrap .after-layer {
+    clip-path: inset(0 50% 0 0);
+    filter: saturate(1.05) contrast(1.05);
+  }
+
+  .compare-handle {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--red);
+    transform: translateX(-1px);
+  }
+  .compare-handle::after {
+    content: '↔';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px; height: 36px;
+    background: var(--red);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .compare-label {
+    position: absolute;
+    bottom: 12px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    padding: 5px 10px;
+    background: rgba(26,26,26,0.78);
+    color: var(--paper);
+  }
+  .compare-label.left { left: 12px; }
+  .compare-label.right { right: 12px; }
+
+  .compare-caption {
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .compare-caption h4 {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .compare-caption span {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+
+  /* ===== Process ===== */
+  .process-bg { background: var(--ink); color: var(--paper); }
+  .process-bg .section-head p { color: rgba(250,250,248,0.65); }
+  .process-bg .eyebrow { color: #E8888C; }
+  .process-bg .eyebrow::before { background: #E8888C; }
+
+  .process-list {
+    border-top: 1px solid rgba(250,250,248,0.14);
+  }
+  .process-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 1.3fr;
+    gap: 40px;
+    align-items: start;
+    padding: 38px 0;
+    border-bottom: 1px solid rgba(250,250,248,0.14);
+  }
+  .process-row .pnum {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #E8888C;
+    letter-spacing: 0.04em;
+    padding-top: 4px;
+  }
+  .process-row h3 {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 500;
+  }
+  .process-row p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: rgba(250,250,248,0.6);
+  }
+
+  /* ===== Gift sets ===== */
+  .gift-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .gift-card {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+  }
+  .gift-card.featured { border-color: var(--ink); position: relative; }
+  .gift-card.featured::before {
+    content: 'LE PLUS CHOISI';
+    position: absolute;
+    top: -1px; right: -1px;
+    background: var(--red);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 6px 12px;
+  }
+
+  .gift-img {
+    aspect-ratio: 16/10;
+    background: var(--card);
+    overflow: hidden;
+  }
+  .gift-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .gift-body { padding: 32px 30px; flex: 1; display: flex; flex-direction: column; }
+
+  .gift-body h3 {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .gift-body > p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+
+  .gift-list { list-style: none; margin-bottom: 26px; flex: 1; }
+  .gift-list li {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .gift-list li:first-child { border-top: none; }
+  .gift-list li::before {
+    content: '—';
+    color: var(--red);
+    flex-shrink: 0;
+  }
+
+  .gift-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .gift-price {
+    font-family: var(--display);
+    font-size: 21px;
+  }
+  .gift-price span {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .gift-cta {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .gift-cta:hover { color: var(--red-deep); border-color: var(--red-deep); }
+
+  /* ===== Testimonial ===== */
+  .testimonial-bg { background: var(--paper-warm); }
+  .testimonial-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .testimonial-inner .quote-mark {
+    font-family: var(--display);
+    font-size: 80px;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .testimonial-inner p.quote {
+    font-family: var(--display);
+    font-size: clamp(22px, 2.6vw, 30px);
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    margin-bottom: 32px;
+  }
+  .testimonial-attr {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+  }
+  .testimonial-attr strong { color: var(--ink); font-weight: 600; }
+
+  /* ===== FAQ ===== */
+  .faq-list { border-top: 1px solid var(--line); }
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 26px 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--display);
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .faq-q .plus {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    position: relative;
+  }
+  .faq-q .plus::before, .faq-q .plus::after {
+    content: '';
+    position: absolute;
+    background: var(--ink);
+    transition: transform .3s ease;
+  }
+  .faq-q .plus::before { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
+  .faq-q .plus::after { left: 50%; top: 0; height: 100%; width: 1px; transform: translateX(-50%); }
+  .faq-item.open .faq-q .plus::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
+  .faq-item.open .faq-q { color: var(--red-deep); }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease;
+  }
+  .faq-a-inner {
+    padding-bottom: 26px;
+    max-width: 640px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Contact form ===== */
+  .contact-bg { background: var(--ink); color: var(--paper); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 70px;
+  }
+
+  .contact-info h2 {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(30px, 3.4vw, 42px);
+    line-height: 1.1;
+    margin-bottom: 22px;
+  }
+  .contact-info h2 em { font-style: italic; font-weight: 400; color: #E8888C; }
+  .contact-info > p {
+    font-size: 16px;
+    line-height: 1.65;
+    color: rgba(250,250,248,0.62);
+    margin-bottom: 44px;
+    max-width: 420px;
+  }
+
+  .contact-channel {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(250,250,248,0.14);
+  }
+  .contact-channel:last-child { border-bottom: 1px solid rgba(250,250,248,0.14); }
+  .channel-ic {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #E8888C;
+    border: 1px solid rgba(232,136,140,0.4);
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .channel-body .ch-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(250,250,248,0.45);
+    margin-bottom: 4px;
+  }
+  .channel-body .ch-value {
+    font-size: 15.5px;
+    font-weight: 500;
+  }
+  .channel-body .ch-value a:hover { color: #E8888C; }
+
+  .form-card {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 44px;
+    border: 1px solid rgba(250,250,248,0.1);
+  }
+
+  .form-row { margin-bottom: 22px; }
+  .form-row label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 9px;
+  }
+  .form-row input, .form-row select, .form-row textarea {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    padding: 10px 2px;
+    font-family: var(--body);
+    font-size: 15px;
+    color: var(--ink);
+    transition: border-color .2s ease;
+  }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+    border-color: var(--red);
+    outline: none;
+  }
+  .form-row textarea { resize: vertical; min-height: 80px; }
+  .form-two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .form-submit {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 17px;
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background .25s ease;
+  }
+  .form-submit:hover { background: var(--red-deep); border-color: var(--red-deep); }
+
+  .form-note {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 40px 0;
+  }
+  .form-success.show { display: block; }
+  .form-success .check {
+    width: 52px; height: 52px;
+    border: 1px solid var(--red);
+    border-radius: 50%;
+    margin: 0 auto 22px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red);
+    font-size: 22px;
+  }
+  .form-success h3 {
+    font-family: var(--display);
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .form-success p {
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    padding: 50px 0;
+    border-top: 1px solid var(--line);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .footer-logo {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .footer-logo span { color: var(--red); font-style: italic; font-weight: 400; }
+  .footer-meta {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+    display: flex;
+    gap: 28px;
+  }
+
+  /* ===== Reveal on scroll ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 980px) {
+    nav { display: none; }
+    .mobile-toggle {
+      display: block;
+      font-family: var(--mono);
+      font-size: 12px;
+      border: 1px solid var(--ink);
+      padding: 9px 14px;
+      background: none;
+      cursor: pointer;
+    }
+    .header-cta { display: none; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-visual { max-width: 380px; margin: 0 auto; order: -1; margin-bottom: 20px; }
+    .hero { padding-top: 140px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+    .gift-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+    .process-row { grid-template-columns: 1fr; gap: 10px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 50px; }
+    .form-card { padding: 30px 24px; }
+    .form-two { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; align-items: flex-start; }
+    .float-card { left: 0; }
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 0 20px; }
+    .header-inner { padding: 16px 20px; }
+    .section-pad { padding: 80px 0; }
+    .hero-stats { flex-wrap: wrap; gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">Mémoire<span>Restaurée</span></div>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#avant-apres">Avant / Après</a>
+      <a href="#process">Méthode</a>
+      <a href="#coffrets">Coffrets</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a href="#contact" class="header-cta">Demander un devis</a>
+    <button class="mobile-toggle" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Atelier fondé en 2014 · Genève</div>
+      <h1>Vos photographies abîmées méritent <em>une seconde vie.</em></h1>
+      <p class="hero-lede">Déchirures, taches d'eau, couleurs effacées par le temps : nous restaurons chaque cliché avec la précision d'un restaurateur d'art, puis l'imprimons et l'encadrons pour qu'il traverse les générations suivantes.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Demander un devis gratuit</a>
+        <a href="#avant-apres" class="btn-text">Voir des restaurations</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">12<span> 000+</span></div>
+          <div class="stat-label">Photographies<br>restaurées</div>
+        </div>
+        <div>
+          <div class="stat-num">48<span>h</span></div>
+          <div class="stat-label">Premier aperçu<br>de restauration</div>
+        </div>
+        <div>
+          <div class="stat-num">4.9<span>/5</span></div>
+          <div class="stat-label">Note moyenne<br>des familles</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="photo-frame">
+        <img class="ph-img" src="https://images.unsplash.com/photo-1551803091-e20673f15770?w=800&q=80" alt="Portrait de famille ancien restauré">
+        <svg class="seam-svg" viewBox="0 0 400 480" preserveAspectRatio="none">
+          <path d="M 0 180 Q 120 160 180 220 T 400 260" stroke="#B8262C" stroke-width="1.4" fill="none" stroke-dasharray="1 7" stroke-linecap="round" opacity="0.85"/>
+        </svg>
+        <div class="corner-tag">RESTAURÉE — 1962</div>
+      </div>
+      <div class="float-card">
+        <div class="dot"></div>
+        <p>Déchirure recousue numériquement, visage entièrement reconstitué.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section class="services-bg" id="services">
+  <div class="wrap section-pad">
+    <div class="section-head reveal">
+      <div class="eyebrow">Notre savoir-faire</div>
+      <h2>Quatre métiers, <em>un seul objectif :</em> préserver vos souvenirs.</h2>
+      <p>De la photographie déchirée retrouvée dans un grenier au coffret offert à un proche, chaque étape est réalisée à la main par notre atelier.</p>
+    </div>
+  </div>
+  <div class="wrap" style="padding-bottom: 120px;">
+    <div class="services-grid reveal">
+      <div class="service-card">
+        <span class="service-num">01</span>
+        <h3>Restauration de photos endommagées</h3>
+        <p>Déchirures, plis, taches, moisissures ou décolorations : nous réparons chaque imperfection pixel par pixel, en respectant la texture et l'authenticité du tirage original.</p>
+        <div class="service-tags"><span>Déchirures</span><span>Taches d'eau</span><span>Décoloration</span></div>
+      </div>
+      <div class="service-card">
+        <span class="service-num">02</span>
+        <h3>Reconstruction d'images</h3>
+        <p>Visage flou, partie manquante, négatif perdu : nos restaurateurs reconstituent les zones disparues en s'appuyant sur des photos de la même série et un travail artistique minutieux.</p>
+        <div class="service-tags"><span>Visages</span><span>Zones manquantes</span><span>Mise au point</span></div>
+      </div>
+      <div class="service-card">
+        <span class="service-num">03</span>
+        <h3>Impression et mise en valeur</h3>
+        <p>Tirages giclée sur papier d'archive, encadrement sur mesure, montage sous verre musée : votre photo restaurée devient un objet digne d'être exposé.</p>
+        <div class="service-tags"><span>Papier d'archive</span><span>Cadres sur mesure</span><span>Verre anti-UV</span></div>
+      </div>
+      <div class="service-card">
+        <span class="service-num">04</span>
+        <h3>Coffrets-cadeaux de famille</h3>
+        <p>Albums reliés à la main, boîtes d'archives, séries encadrées : nous composons un cadeau qui raconte une histoire familiale, prêt à offrir.</p>
+        <div class="service-tags"><span>Albums reliés</span><span>Boîtes d'archive</span><span>Séries encadrées</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AVANT / APRES ================= -->
+<section id="avant-apres">
+  <div class="wrap section-pad">
+    <div class="section-head reveal">
+      <div class="eyebrow">Démonstration</div>
+      <h2>Faites glisser pour voir <em>le résultat.</em></h2>
+      <p>Un aperçu de trois restaurations réalisées par notre atelier. Chaque dossier est traité individuellement selon l'état du tirage d'origine.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card reveal">
+        <div class="compare-img-wrap" data-compare>
+          <img class="before-layer" src="https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=600&q=70" alt="Avant restauration">
+          <img class="after-layer" src="https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=600&q=85" alt="Après restauration">
+          <div class="compare-handle"></div>
+          <span class="compare-label left">AVANT</span>
+          <span class="compare-label right">APRÈS</span>
+        </div>
+        <div class="compare-caption">
+          <h4>Portrait, 1948</h4>
+          <span>Déchirure + décoloration</span>
+        </div>
+      </div>
+
+      <div class="compare-card reveal">
+        <div class="compare-img-wrap" data-compare>
+          <img class="before-layer" src="https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&q=70" alt="Avant restauration">
+          <img class="after-layer" src="https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&q=85" alt="Après restauration">
+          <div class="compare-handle"></div>
+          <span class="compare-label left">AVANT</span>
+          <span class="compare-label right">APRÈS</span>
+        </div>
+        <div class="compare-caption">
+          <h4>Mariage, 1971</h4>
+          <span>Tache d'eau + pli central</span>
+        </div>
+      </div>
+
+      <div class="compare-card reveal">
+        <div class="compare-img-wrap" data-compare>
+          <img class="before-layer" src="https://images.unsplash.com/photo-1500336624523-d727130c3328?w=600&q=70" alt="Avant restauration">
+          <img class="after-layer" src="https://images.unsplash.com/photo-1500336624523-d727130c3328?w=600&q=85" alt="Après restauration">
+          <div class="compare-handle"></div>
+          <span class="compare-label left">AVANT</span>
+          <span class="compare-label right">APRÈS</span>
+        </div>
+        <div class="compare-caption">
+          <h4>Famille, 1959</h4>
+          <span>Visage à reconstituer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROCESS ================= -->
+<section class="process-bg" id="process">
+  <div class="wrap section-pad">
+    <div class="section-head reveal">
+      <div class="eyebrow">Notre méthode</div>
+      <h2>De l'envoi du cliché <em>au tirage encadré.</em></h2>
+      <p>Un processus clair en cinq étapes, du premier contact à la livraison de votre photographie restaurée.</p>
+    </div>
+
+    <div class="process-list reveal">
+      <div class="process-row">
+        <div class="pnum">01</div>
+        <h3>Envoi du cliché</h3>
+        <p>Photographiez ou scannez votre photo abîmée et envoyez-la via notre formulaire, WhatsApp ou par courrier pour les originaux fragiles.</p>
+      </div>
+      <div class="process-row">
+        <div class="pnum">02</div>
+        <h3>Diagnostic et devis</h3>
+        <p>Notre restaurateur évalue les dommages et vous propose un devis détaillé sous 48 heures, sans engagement de votre part.</p>
+      </div>
+      <div class="process-row">
+        <div class="pnum">03</div>
+        <h3>Restauration manuelle</h3>
+        <p>Réparation des déchirures, reconstruction des zones manquantes et correction des couleurs, image par image, par notre équipe.</p>
+      </div>
+      <div class="process-row">
+        <div class="pnum">04</div>
+        <h3>Validation avec vous</h3>
+        <p>Vous recevez un aperçu avant impression et pouvez demander des ajustements jusqu'à votre entière satisfaction.</p>
+      </div>
+      <div class="process-row">
+        <div class="pnum">05</div>
+        <h3>Impression et livraison</h3>
+        <p>Tirage sur papier d'archive, encadrement ou mise en coffret, puis livraison soignée à votre domicile.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COFFRETS ================= -->
+<section id="coffrets">
+  <div class="wrap section-pad">
+    <div class="section-head reveal">
+      <div class="eyebrow">Coffrets-cadeaux</div>
+      <h2>Offrir une histoire de famille, <em>pas seulement une photo.</em></h2>
+      <p>Trois formules pensées pour transformer des souvenirs restaurés en un cadeau qui se transmet.</p>
+    </div>
+
+    <div class="gift-grid reveal">
+      <div class="gift-card">
+        <div class="gift-img"><img src="https://images.unsplash.com/photo-1518131672697-613becd4fab5?w=500&q=80" alt="Coffret Souvenir"></div>
+        <div class="gift-body">
+          <h3>Coffret Souvenir</h3>
+          <p>L'essentiel pour redonner vie à une photo unique et l'offrir avec soin.</p>
+          <ul class="gift-list">
+            <li>1 photo restaurée</li>
+            <li>Tirage A4, papier d'archive</li>
+            <li>Boîte cadeau en lin</li>
+            <li>Livraison 10 jours</li>
+          </ul>
+          <div class="gift-foot">
+            <div class="gift-price">CHF 129<span>à partir de</span></div>
+            <a href="#contact" class="gift-cta">Choisir →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="gift-card featured">
+        <div class="gift-img"><img src="https://images.unsplash.com/photo-1606830733744-0d5b3b6e6e0a?w=500&q=80" alt="Coffret Héritage"></div>
+        <div class="gift-body">
+          <h3>Coffret Héritage</h3>
+          <p>Pour rassembler plusieurs générations dans un album relié à la main.</p>
+          <ul class="gift-list">
+            <li>5 photos restaurées</li>
+            <li>Album relié cuir, 20 pages</li>
+            <li>1 tirage encadré A3</li>
+            <li>Livraison 15 jours</li>
+          </ul>
+          <div class="gift-foot">
+            <div class="gift-price">CHF 389<span>à partir de</span></div>
+            <a href="#contact" class="gift-cta">Choisir →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="gift-card">
+        <div class="gift-img"><img src="https://images.unsplash.com/photo-1577083552431-6e5fd75a9160?w=500&q=80" alt="Coffret Patrimoine"></div>
+        <div class="gift-body">
+          <h3>Coffret Patrimoine</h3>
+          <p>La formule complète pour archiver et transmettre l'ensemble d'un fonds familial.</p>
+          <ul class="gift-list">
+            <li>15 photos restaurées</li>
+            <li>Boîte d'archive numérotée</li>
+            <li>3 tirages encadrés</li>
+            <li>Copie numérique haute résolution</li>
+          </ul>
+          <div class="gift-foot">
+            <div class="gift-price">CHF 890<span>à partir de</span></div>
+            <a href="#contact" class="gift-cta">Choisir →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIAL ================= -->
+<section class="testimonial-bg">
+  <div class="wrap section-pad-sm">
+    <div class="testimonial-inner reveal">
+      <div class="quote-mark">"</div>
+      <p class="quote">Nous avions une seule photo de mon grand-père, déchirée en deux et tachée par l'humidité. L'atelier l'a reconstituée avec un tel soin que mes parents en ont pleuré en la découvrant encadrée.</p>
+      <div class="testimonial-attr"><strong>Claire M.</strong> — Lausanne</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq">
+  <div class="wrap section-pad">
+    <div class="section-head reveal">
+      <div class="eyebrow">Questions fréquentes</div>
+      <h2>Tout ce qu'il faut savoir <em>avant de commencer.</em></h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item open">
+        <button class="faq-q"><span>Dois-je envoyer la photo originale ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Non, un scan ou une photographie nette à haute résolution suffit dans la majorité des cas. Pour les restaurations les plus délicates, nous pouvons vous indiquer comment numériser l'original sans l'abîmer davantage, ou organiser un envoi sécurisé.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Combien de temps prend une restauration ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Comptez en moyenne 7 à 15 jours selon l'ampleur des dégâts et le nombre de photos. Un premier aperçu vous est toujours envoyé sous 48 heures après validation du devis.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Que faire si une partie du visage a disparu ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Notre équipe reconstitue les zones manquantes en s'appuyant sur d'autres photographies de la même personne ou de la même série, lorsque cela est possible, afin de rester fidèle à la réalité.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Proposez-vous l'encadrement sur mesure ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Oui, nous proposons des cadres en bois ou métal dans plusieurs formats, avec verre anti-UV pour protéger le tirage restauré de la lumière sur le long terme.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Puis-je commander un coffret pour plusieurs photos différentes ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Tout à fait. Les coffrets Héritage et Patrimoine sont conçus pour rassembler plusieurs photos restaurées, issues d'une même famille ou de plusieurs générations, dans un seul objet cohérent.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="contact-bg" id="contact">
+  <div class="wrap section-pad">
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <div class="eyebrow">Commencer un projet</div>
+        <h2>Parlons de <em>votre photographie.</em></h2>
+        <p>Décrivez-nous l'état de votre photo et le résultat souhaité. Nous répondons sous 48 heures avec un devis détaillé et sans engagement.</p>
+
+        <div class="contact-channel">
+          <div class="channel-ic">@</div>
+          <div class="channel-body">
+            <div class="ch-label">E-mail</div>
+            <div class="ch-value"><a href="mailto:atelier@memoire-restauree.ch">atelier@memoire-restauree.ch</a></div>
+          </div>
+        </div>
+        <div class="contact-channel">
+          <div class="channel-ic">☎</div>
+          <div class="channel-body">
+            <div class="ch-label">Téléphone & WhatsApp</div>
+            <div class="ch-value"><a href="tel:+41220000000">+41 22 000 00 00</a></div>
+          </div>
+        </div>
+        <div class="contact-channel">
+          <div class="channel-ic">⌂</div>
+          <div class="channel-body">
+            <div class="ch-label">Atelier</div>
+            <div class="ch-value">Rue des Artisans 14, 1201 Genève</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card reveal">
+        <form id="contactForm">
+          <div class="form-row">
+            <label for="name">Nom complet</label>
+            <input type="text" id="name" required placeholder="Votre nom et prénom">
+          </div>
+          <div class="form-two">
+            <div class="form-row">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" required placeholder="vous@exemple.ch">
+            </div>
+            <div class="form-row">
+              <label for="phone">Téléphone</label>
+              <input type="tel" id="phone" placeholder="+41 ...">
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="service">Service souhaité</label>
+            <select id="service">
+              <option>Restauration de photo abîmée</option>
+              <option>Reconstruction d'image</option>
+              <option>Impression et encadrement</option>
+              <option>Coffret-cadeau de famille</option>
+              <option>Je ne sais pas encore</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="message">Décrivez l'état de votre photo</label>
+            <textarea id="message" placeholder="Déchirure, tache, visage manquant, nombre de photos…"></textarea>
+          </div>
+          <button type="submit" class="form-submit">Envoyer ma demande</button>
+          <p class="form-note">En envoyant ce formulaire, vous acceptez d'être recontacté par notre atelier au sujet de votre demande.</p>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <div class="check">✓</div>
+          <h3>Demande bien reçue</h3>
+          <p>Merci, nous revenons vers vous sous 48 heures avec votre devis personnalisé.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-logo">Mémoire<span>Restaurée</span></div>
+    <div class="footer-meta">
+      <span>© 2026 — Atelier de restauration</span>
+      <span>Genève, Suisse</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Before/after slider
+  document.querySelectorAll('[data-compare]').forEach(wrap => {
+    const after = wrap.querySelector('.after-layer');
+    const handle = wrap.querySelector('.compare-handle');
+
+    function setPos(ratio) {
+      ratio = Math.min(1, Math.max(0, ratio));
+      after.style.clipPath = `inset(0 ${(1 - ratio) * 100}% 0 0)`;
+      handle.style.left = `${ratio * 100}%`;
+    }
+
+    function handleMove(clientX) {
+      const rect = wrap.getBoundingClientRect();
+      setPos((clientX - rect.left) / rect.width);
+    }
+
+    let dragging = false;
+    wrap.addEventListener('mousedown', (e) => { dragging = true; handleMove(e.clientX); });
+    window.addEventListener('mousemove', (e) => { if (dragging) handleMove(e.clientX); });
+    window.addEventListener('mouseup', () => dragging = false);
+
+    wrap.addEventListener('touchstart', (e) => handleMove(e.touches[0].clientX));
+    wrap.addEventListener('touchmove', (e) => handleMove(e.touches[0].clientX));
+
+    wrap.addEventListener('mousemove', (e) => { if (!dragging) handleMove(e.clientX); });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+
+    function setHeight() {
+      if (item.classList.contains('open')) {
+        a.style.maxHeight = a.scrollHeight + 'px';
+      } else {
+        a.style.maxHeight = '0px';
+      }
+    }
+    setHeight();
+
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => {
+        o.classList.remove('open');
+        o.querySelector('.faq-a').style.maxHeight = '0px';
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        setHeight();
+      }
+    });
+  });
+
+  // Contact form
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    this.style.display = 'none';
+    document.getElementById('formSuccess').classList.add('show');
+  });
+</script>
+
+</body>
+</html>
